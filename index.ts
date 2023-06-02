@@ -40,6 +40,7 @@ app.post("/line-webhook",async function _(request:any , response : any) : Promis
                             }
                             
         ];
+        console.log(jsonBody.events[0].message.text)
         
         if(String(jsonBody.events[0].message.text )=== "ขอทราบชื่อนายก"){
             mgsFromSmartBot.push( {
@@ -48,9 +49,66 @@ app.post("/line-webhook",async function _(request:any , response : any) : Promis
             })
         }
         if(String(jsonBody.events[0].message.text )=== "สมัครรับข้อมูล"){
+            // mgsFromSmartBot.push( {
+            //     "type":"text",
+            //     "text":`Your id is->`+jsonBody.events[0].source.userId
+            // })
+            console.log("test--------------------------------")
+            const userId:string = String(jsonBody.events[0].source.userId);
+            let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: `https://api.line.me/v2/bot/user/${userId}/linkToken`,
+                headers: { 
+                    "Authorization" : "Bearer "+channelSecret
+                }
+              };
+            let issueData = (await axios(config)).data; 
+            
+            //---- ตรงนี้บันทึก userId และ issueData ไว้เลย ---------
+            console.log(`iss_za->`,issueData.linkToken);
+
+            let mgsFromSmartBot = [
+                {
+                    "type":"text",
+                    "text":"นี่คือแจ้งเตือน"
+                }
+];
+
+            const configForPush = {
+            method : "POST",
+            url : "https://api.line.me/v2/bot/message/push",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization" : "Bearer "+channelSecret
+            },
+            data : JSON.stringify({
+                "to": `${userId}`,
+                "messages": [{
+                    "type": "template",
+                    "altText": "Account Link",
+                    "template": {
+                        "type": "buttons",
+                        "text": "Account Link",
+                        "actions": [{
+                            "type": "uri",
+                            "label": "Account Link",
+                            "uri": `http://example.com/link?linkToken=${issueData.linkToken}`
+                        }]
+                    }
+                }]
+            })
+            };
+            const sentMessageResponse = await axios(configForPush);
+            console.log(`send login page to -->`,sentMessageResponse.data);
+            //--------------------------------------------------
+
+            
+        }
+        if(String(jsonBody.events[0].message.text )=== "ติดต่อด่วน"){
             mgsFromSmartBot.push( {
                 "type":"text",
-                "text":`Your id is->`+jsonBody.events[0].source.userId
+                "text":`หากรีบโปรดโทรไปที่ 095-555-5555`
             })
             
         }
@@ -73,7 +131,7 @@ app.post("/line-webhook",async function _(request:any , response : any) : Promis
 
         response.status(200).send("this is line webhook!");
     }catch(error : any){
-        console.log(`issue ->`,error.response.data || error.stack);
+        console.log(`issue ->`,error.response?.data || error.stack);
         response.status(500).send("error");
     }
 });
