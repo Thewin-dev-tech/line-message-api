@@ -32,7 +32,7 @@
                     })
                     .then(response => {
                         console.log('Token retrieved successfully:', response.data);
-                        console.log(atob(response.data.id_token));
+                        console.log(`data-->`,JSON.parse(atob(response.data.id_token.split(".")[1])));
                         // Handle the response data as needed
                     })
                     .catch(error => {
