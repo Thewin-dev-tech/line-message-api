@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Line</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body>
+    <a href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1661305284&redirect_uri=https://ab39-1-20-219-102.ngrok-free.app/login-line.html&state=1234567890abcde&scope=openid%20profile%20email" type="button">
+        Login with Line
+    </a>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        window.onload = async () =>{
+                    const params = new URLSearchParams();
+                    params.append('grant_type', 'authorization_code');
+                    params.append('code', new URL(location.href).searchParams.get("code"));
+                    params.append('redirect_uri', 'https://ab39-1-20-219-102.ngrok-free.app/login-line.html'); // For localhost
+                    // params.append('redirect_uri', `${req.protocol}://${req.get('host')}/share/login-line.php`); // For server
+                    params.append('client_id', '1661305284');
+                    params.append('client_secret', '5b2e3367e2c868f9db290850acd35033');
+                    // params.append('code_verifier', 'wJKN8qz5t8SSI9lMFhBB6qwNkQBkuPZoCxzRhwLRUo1'); // For PKCE
+
+                    axios.post('https://api.line.me/oauth2/v2.1/token', params, {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        }
+                    })
+                    .then(response => {
+                        console.log('Token retrieved successfully:', response.data);
+                        console.log(atob(response.data.id_token));
+                        // Handle the response data as needed
+                    })
+                    .catch(error => {
+                        console.error('Failed to retrieve token:', error);
+                        // Handle the error as needed
+                    });
+        }
+    </script>
+</body>
+</html>
