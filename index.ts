@@ -33,6 +33,7 @@ app.post("/line-webhook",async function _(request:any , response : any) : Promis
 
         //---------  ส่งไป Message คืน -----------------------
         let jsonBody = JSON.parse(body);
+        if(! jsonBody.events[0]?.message) return response.status(200).json({message:"verify webhook"});
         let mgsFromSmartBot = [
                             {
                                 "type":"text",
