@@ -148,7 +148,7 @@ app.get("/line-send-push",async function _(request:any , response : any) : Promi
         let mgsFromSmartBot = [
                             {
                                 "type":"text",
-                                "text":"นี่คือแจ้งเตือน"
+                                "text":"ขี้เยสๆ"
                             }
         ];
 
@@ -160,7 +160,7 @@ app.get("/line-send-push",async function _(request:any , response : any) : Promi
                 "Authorization" : "Bearer "+channelSecret
             },
             data : JSON.stringify({
-                "to": "Ub08b524924c0e9f70bec86c9918a4eeb",
+                "to": "Ue4ea2f5284a54283929b40fb178d6566",
                 "messages": mgsFromSmartBot
             })
         };
@@ -176,5 +176,5 @@ app.get("/line-send-push",async function _(request:any , response : any) : Promi
 });
       
 
-const port:number = 3000;
+const port:number = 3001;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
