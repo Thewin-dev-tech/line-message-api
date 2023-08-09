@@ -175,6 +175,7 @@ app.get("/line-send-push",async function _(request:any , response : any) : Promi
     }
 });
       
+app.post("/rtu-webhook",require("./rtus-api"));
 
 const port:number = 3001;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
